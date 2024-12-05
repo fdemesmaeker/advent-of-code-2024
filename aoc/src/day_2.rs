@@ -1,5 +1,11 @@
 use std::fs::read_to_string;
 
+use crate::day::Challenge;
+
+pub struct Day2 {
+    pub filename: String
+}
+
 fn parse_lines(filename: &str) -> Vec<Vec<i32>> {
     fn parse_line(line: String) -> Vec<i32> {
         line.split(" ").map(|n| n.parse::<i32>().unwrap()).collect()
@@ -53,21 +59,24 @@ fn _is_safe(levels: &Vec<i32>, tolerate_one_failed_report: bool, current_index: 
     true
 }
 
-fn part_1(filename: &str) -> i32 {
-    let reports = parse_lines(filename);
-    reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, false)).count().try_into().unwrap()
-}
 
-fn part_2(filename: &str) -> i32 {
-    let reports = parse_lines(filename);
-    reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, true))
-        .count().try_into().unwrap()
-}
-
-pub fn main(filename: &str) {
-    let solution_1 = part_1(filename);
-    println!("Solution Day 2 part 1: {}", solution_1);
-
-    let solution_2 = part_2(filename);
-    println!("Solution Day 2 part 2: {}", solution_2);
+impl Challenge for Day2 {
+    fn part_1(&self) -> i32 {
+        let reports = parse_lines(&self.filename);
+        reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, false)).count().try_into().unwrap()
+    }
+    
+    fn part_2(&self) -> i32 {
+        let reports = parse_lines(&self.filename);
+        reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, true))
+            .count().try_into().unwrap()
+    }
+    
+    fn run(&self) -> () {
+        let solution_1 = self.part_1();
+        println!("Solution Day 2 part 1: {}", solution_1);
+    
+        let solution_2 = self.part_2();
+        println!("Solution Day 2 part 2: {}", solution_2);
+    }
 }

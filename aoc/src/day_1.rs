@@ -1,5 +1,10 @@
 use std::fs::read_to_string;
 use std::collections::HashMap;
+use crate::day::Challenge;
+
+pub struct Day1 {
+    pub filename: String
+}
 
 fn parse_lines(filename: &str) -> (Vec<i32>, Vec<i32>) {
     fn parse_line(line: String) -> (i32, i32) {
@@ -22,36 +27,38 @@ fn parse_lines(filename: &str) -> (Vec<i32>, Vec<i32>) {
     (left, right)
 }
 
-fn part_1(filename: &str) -> i32 {
-    let (left, right) = parse_lines(filename);
+impl Challenge for Day1 {
+    fn part_1(&self) -> i32 {
+        let (left, right) = parse_lines(&self.filename);
+        
+        left.iter().zip(right.iter())
+            .map(|(a, b)| (a - b).abs())
+            .sum()
+    }
     
-    left.iter().zip(right.iter())
-        .map(|(a, b)| (a - b).abs())
-        .sum()
-}
-
-fn part_2(filename: &str) -> i32 {
-    let (left, right) = parse_lines(filename);
-    let mut right_map: HashMap<i32, i32> = HashMap::new();
-
-    let add_to_map = |i: &i32| -> () {
-        match right_map.get(i) {
-            None => right_map.insert(*i, 1),
-            Some(count) => right_map.insert(*i, count+1)
+    fn part_2(&self) -> i32 {
+        let (left, right) = parse_lines(&self.filename);
+        let mut right_map: HashMap<i32, i32> = HashMap::new();
+    
+        let add_to_map = |i: &i32| -> () {
+            match right_map.get(i) {
+                None => right_map.insert(*i, 1),
+                Some(count) => right_map.insert(*i, count+1)
+            };
         };
-    };
-    right.iter().for_each(add_to_map);
-
-    left.iter().map(|i| match right_map.get(i) {
-        None => 0,
-        Some(count) => *count * i
-    }).sum()
-}
-
-pub fn main(filename: &str) {
-    let solution_1 = part_1(filename);
-    println!("Solution Day 1 part 1: {}", solution_1);
-
-    let solution_2 = part_2(filename);
-    println!("Solution Day 1 part 2: {}", solution_2);
+        right.iter().for_each(add_to_map);
+    
+        left.iter().map(|i| match right_map.get(i) {
+            None => 0,
+            Some(count) => *count * i
+        }).sum()
+    }
+    
+    fn run(&self) -> () {
+        let solution_1 = self.part_1();
+        println!("Solution Day 1 part 1: {}", solution_1);
+    
+        let solution_2 = self.part_2();
+        println!("Solution Day 1 part 2: {}", solution_2);
+    }
 }
