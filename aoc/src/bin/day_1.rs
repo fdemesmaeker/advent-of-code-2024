@@ -1,9 +1,9 @@
 use std::fs::read_to_string;
 use std::collections::HashMap;
-use crate::day::Challenge;
+use aoc::utils::{Challenge, get_input_path};
 
-pub struct Day1 {
-    pub filename: String
+struct Day1 {
+    input_path: String
 }
 
 fn parse_lines(filename: &str) -> (Vec<i32>, Vec<i32>) {
@@ -29,7 +29,7 @@ fn parse_lines(filename: &str) -> (Vec<i32>, Vec<i32>) {
 
 impl Challenge for Day1 {
     fn part_1(&self) -> i32 {
-        let (left, right) = parse_lines(&self.filename);
+        let (left, right) = parse_lines(&self.input_path);
         
         left.iter().zip(right.iter())
             .map(|(a, b)| (a - b).abs())
@@ -37,7 +37,7 @@ impl Challenge for Day1 {
     }
     
     fn part_2(&self) -> i32 {
-        let (left, right) = parse_lines(&self.filename);
+        let (left, right) = parse_lines(&self.input_path);
         let mut right_map: HashMap<i32, i32> = HashMap::new();
     
         let add_to_map = |i: &i32| -> () {
@@ -53,12 +53,10 @@ impl Challenge for Day1 {
             Some(count) => *count * i
         }).sum()
     }
-    
-    fn run(&self) -> () {
-        let solution_1 = self.part_1();
-        println!("Solution Day 1 part 1: {}", solution_1);
-    
-        let solution_2 = self.part_2();
-        println!("Solution Day 1 part 2: {}", solution_2);
-    }
+}
+
+fn main() {
+    let input_path: String = get_input_path(1);
+    let day = Day1 {input_path};
+    day.run();
 }

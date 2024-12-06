@@ -1,9 +1,8 @@
 use std::fs::read_to_string;
+use aoc::utils::{Challenge, get_input_path};
 
-use crate::day::Challenge;
-
-pub struct Day2 {
-    pub filename: String
+struct Day2 {
+    input_path: String
 }
 
 fn parse_lines(filename: &str) -> Vec<Vec<i32>> {
@@ -62,21 +61,20 @@ fn _is_safe(levels: &Vec<i32>, tolerate_one_failed_report: bool, current_index: 
 
 impl Challenge for Day2 {
     fn part_1(&self) -> i32 {
-        let reports = parse_lines(&self.filename);
+        let reports = parse_lines(&self.input_path);
         reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, false)).count().try_into().unwrap()
     }
     
     fn part_2(&self) -> i32 {
-        let reports = parse_lines(&self.filename);
+        let reports = parse_lines(&self.input_path);
         reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, true))
             .count().try_into().unwrap()
     }
-    
-    fn run(&self) -> () {
-        let solution_1 = self.part_1();
-        println!("Solution Day 2 part 1: {}", solution_1);
-    
-        let solution_2 = self.part_2();
-        println!("Solution Day 2 part 2: {}", solution_2);
-    }
 }
+
+fn main() {
+    let input_path: String = get_input_path(2);
+    let day = Day2 {input_path};
+    day.run();
+}
+

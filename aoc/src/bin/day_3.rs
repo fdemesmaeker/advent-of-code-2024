@@ -1,30 +1,11 @@
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::Path;
 use regex::Regex;
 
-use crate::day::Challenge;
-pub struct Day3 {
-    pub filename: String
+use aoc::utils::{Challenge, get_input_path, read_contents};
+
+struct Day3 {
+    input_path: String
 }
 
-fn read_contents(filename: &str) -> String {
-    let path = Path::new(filename);
-    let display = path.display();
-
-    // Open the path in read-only mode, returns `io::Result<File>`
-    let mut file = match File::open(&path) {
-        Err(why) => panic!("couldn't open {}: {}", display, why),
-        Ok(file) => file,
-    };
-
-    // Read the file contents into a string, returns `io::Result<usize>`
-    let mut s = String::new();
-    match file.read_to_string(&mut s) {
-        Err(why) => panic!("couldn't read {}: {}", display, why),
-        Ok(_) => s
-    }
-}
 
 fn perform_mult(mult: &str) -> i32 {
     let re = Regex::new(r"[0-9]{1,3}").unwrap();
@@ -45,7 +26,7 @@ struct Acc {
 
 impl Challenge for Day3 {
     fn part_1(&self) -> i32 {
-        let contents = read_contents(&self.filename);
+        let contents = read_contents(&self.input_path);
     
         let re = Regex::new(r"mul\([0-9]{1,3},[0-9]{1,3}\)").unwrap();
         let multiplications: Vec<&str> = re.find_iter(&contents).map(|m| m.as_str()).collect();
@@ -54,7 +35,7 @@ impl Challenge for Day3 {
     
     
     fn part_2(&self) -> i32 {
-        let contents = read_contents(&self.filename);
+        let contents = read_contents(&self.input_path);
     
         let re = Regex::new(r"mul\([0-9]{1,3},[0-9]{1,3}\)|do\(\)|don't\(\)").unwrap();
         let matches: Vec<&str> = re.find_iter(&contents).map(|m| m.as_str()).collect();
@@ -77,12 +58,10 @@ impl Challenge for Day3 {
     
         matches.iter().fold(initial_acc, |acc: Acc, elem: &&str| reduce(acc, elem)).sum
     }
-    
-    fn run(&self) {
-        let solution_1 = self.part_1();
-        println!("Solution Day 3 part 1: {}", solution_1);
-    
-        let solution_2 = self.part_2();
-        println!("Solution Day 3 part 2: {}", solution_2);
-    }
+}
+
+fn main() {
+    let input_path: String = get_input_path(3);
+    let day = Day3 {input_path};
+    day.run();
 }
