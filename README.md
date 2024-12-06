@@ -1,5 +1,7 @@
 # Advent of code 2024
 
+[Advent of Code](https://adventofcode.com/2024)
+
 ## How to run
 Normal:
 

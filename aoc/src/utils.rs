@@ -26,8 +26,8 @@ pub trait Challenge {
     }
 }
 
-pub fn read_contents(filename: &str) -> String {
-    let path = Path::new(filename);
+pub fn read_contents(input_path: &str) -> String {
+    let path = Path::new(input_path);
     let display = path.display();
 
     // Open the path in read-only mode, returns `io::Result<File>`

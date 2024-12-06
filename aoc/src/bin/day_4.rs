@@ -1,4 +1,4 @@
-use array2d::{Array2D, Error};
+use array2d::{Array2D};
 
 use aoc::utils::{Challenge, get_input_path, read_contents};
 
