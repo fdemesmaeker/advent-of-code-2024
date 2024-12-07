@@ -1,6 +1,8 @@
 use core::fmt;
 
-use array2d::{Array2D};
+use array2d::Array2D;
+use regex::Regex;
+
 
 use aoc::utils::{Challenge, get_input_path, read_contents};
 
@@ -51,6 +53,16 @@ fn get_char(c: &char) -> Chars {
         Chars::S
     } else {
         Chars::UNKNOWN
+    }
+}
+
+fn to_char(c: &Chars) -> char {
+    match c {
+        Chars::X => {'X'}
+        Chars::M => {'M'}
+        Chars::A => {'A'}
+        Chars::S => {'S'}
+        Chars::UNKNOWN => {'_'}
     }
 }
 
@@ -114,6 +126,23 @@ fn build_diagonal_from_bottom_to_top_left(array: &Array2D<char>, start_col: &usi
     diagonal
 }
 
+
+// struct Acc {
+//     current_letter: Chars,
+//     count: i32
+// }
+
+// fn rec_count_xmas(acc: Acc, chars: &Vec<&Chars>) -> Acc {
+
+// }
+
+
+fn count_xmas(chars: &Vec<&Chars>) -> i32 {
+    let input: String = chars.iter().map(|c| to_char(c)).collect();
+    let re = Regex::new(r"XMAS").unwrap();
+    re.find_iter(&input).count() as i32
+}
+
 impl Challenge for Day4 {
     fn part_1(&self) -> i32 {
         let contents: String = read_contents(&self.input_path);
@@ -133,18 +162,45 @@ impl Challenge for Day4 {
         }
         // diagonals
         for i in 0..array.num_columns() {
-            // Starting from top row
             let diagonal_to_right_bottom = build_diagonal_from_top_to_right_bottom(&array, &(i as usize));
             sequences.push(diagonal_to_right_bottom);
             let diagonal_to_left_bottom = build_diagonal_from_top_to_left_bottom(&array, &(i as usize));
             sequences.push(diagonal_to_left_bottom);
-            // Starting from bottom row
+        }
+        // Start from 1 to avoid counting the main diagonal twice
+        for i in 1..array.num_columns() {
             let diagonal_to_top_right = build_diagonal_from_bottom_to_top_right(&array, &(i as usize));
             sequences.push(diagonal_to_top_right);
+        }
+        // End 1 before num columns to avoid counting the other main diagonal twice
+        for i in 0..array.num_columns()-1 {
             let diagonal_to_top_left = build_diagonal_from_bottom_to_top_left(&array, &(i as usize));
             sequences.push(diagonal_to_top_left);
         }
-        41
+
+        println!("Number of normal sequences: {}", sequences.len());
+
+        let reversed_sequences: Vec<Vec<&Chars>> = sequences.iter()
+            .map(|seq| seq.iter().rev().collect())
+            .collect();
+
+        println!("Number of reversed sequences: {}", reversed_sequences.len());
+
+        let mut all_sequences: Vec<Vec<&Chars>> = vec![];
+        reversed_sequences.iter().for_each(|rev_seq| {
+            all_sequences.push(rev_seq.to_vec())
+        });
+        sequences.iter().for_each(|seq| {
+            all_sequences.push(seq.iter().collect());
+        });
+
+        let x: Vec<&Vec<&Chars>> = all_sequences.iter().filter(|seq| seq.len() > 3).collect();
+        println!("Number of all sequences: {}", x.len());
+
+        all_sequences.iter()
+            .filter(|seq| seq.len() > 3)
+            .map(count_xmas)
+            .sum()
     }
     
     fn part_2(&self) -> i32 {
