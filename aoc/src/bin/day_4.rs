@@ -83,6 +83,37 @@ fn build_diagonal_from_top_to_left_bottom(array: &Array2D<char>, start_col: &usi
     diagonal
 }
 
+fn build_diagonal_from_bottom_to_top_right(array: &Array2D<char>, start_col: &usize) -> Vec<Chars> {
+    let mut diagonal: Vec<Chars> = vec![];
+    let mut col: usize = *start_col;
+    for row in (0..array.num_rows()).rev() {
+        let item: Option<&char> = array.get(row, col);
+        match item {
+            None => { return diagonal; }
+            Some(c) => { diagonal.push(get_char(c)); }
+        }
+        col = col + 1;
+    }
+    diagonal
+}
+
+fn build_diagonal_from_bottom_to_top_left(array: &Array2D<char>, start_col: &usize) -> Vec<Chars> {
+    let mut diagonal: Vec<Chars> = vec![];
+    let mut col: usize = *start_col;
+    for row in (0..array.num_rows()).rev() {
+        let item: Option<&char> = array.get(row, col);
+        match item {
+            None => { return diagonal; }
+            Some(c) => { diagonal.push(get_char(c)); }
+        }
+        if col == 0 {
+            return diagonal;
+        }
+        col = col - 1;
+    }
+    diagonal
+}
+
 impl Challenge for Day4 {
     fn part_1(&self) -> i32 {
         let contents: String = read_contents(&self.input_path);
@@ -101,12 +132,17 @@ impl Challenge for Day4 {
             sequences.push(col);
         }
         // diagonals
-        // Starting from top row
         for i in 0..array.num_columns() {
+            // Starting from top row
             let diagonal_to_right_bottom = build_diagonal_from_top_to_right_bottom(&array, &(i as usize));
             sequences.push(diagonal_to_right_bottom);
             let diagonal_to_left_bottom = build_diagonal_from_top_to_left_bottom(&array, &(i as usize));
             sequences.push(diagonal_to_left_bottom);
+            // Starting from bottom row
+            let diagonal_to_top_right = build_diagonal_from_bottom_to_top_right(&array, &(i as usize));
+            sequences.push(diagonal_to_top_right);
+            let diagonal_to_top_left = build_diagonal_from_bottom_to_top_left(&array, &(i as usize));
+            sequences.push(diagonal_to_top_left);
         }
         41
     }
