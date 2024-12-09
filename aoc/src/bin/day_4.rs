@@ -10,6 +10,7 @@ struct Day4 {
     input_path: String
 }
 
+#[derive(PartialEq, Eq)]
 enum Chars {
     X,
     M,
@@ -127,20 +128,38 @@ fn build_diagonal_from_bottom_to_top_left(array: &Array2D<char>, start_col: &usi
 }
 
 
-// struct Acc {
-//     current_letter: Chars,
-//     count: i32
-// }
-
-// fn rec_count_xmas(acc: Acc, chars: &Vec<&Chars>) -> Acc {
-
-// }
-
-
 fn count_xmas(chars: &Vec<&Chars>) -> i32 {
     let input: String = chars.iter().map(|c| to_char(c)).collect();
     let re = Regex::new(r"XMAS").unwrap();
     re.find_iter(&input).count() as i32
+}
+
+struct Window {
+    top_left: Chars, top_right: Chars,
+    center: Chars,
+    bottom_left: Chars, bottom_right: Chars
+}
+
+fn _get_from_array(array: &Array2D<char>, row_index: usize, col_index: usize) -> Chars {
+    get_char(array.get(row_index, col_index).unwrap())
+}
+
+fn build_window(array: &Array2D<char>, row_index: usize, col_index: usize) -> Window {
+    Window {
+        top_left: _get_from_array(&array, row_index, col_index), top_right: _get_from_array(&array, row_index, col_index+2),
+        center: _get_from_array(&array, row_index+1, col_index+1),
+        bottom_left: _get_from_array(&array, row_index+2, col_index), bottom_right: _get_from_array(&array, row_index+2, col_index+2)
+    }
+}
+
+fn is_valid_mas_cross(window: Window) -> bool {
+    let pattern_1 = window.top_left == Chars::M && window.top_right == Chars::M && window.bottom_left == Chars::S && window.bottom_right == Chars::S;
+    let pattern_2 = window.top_left == Chars::S && window.top_right == Chars::M && window.bottom_left == Chars::S && window.bottom_right == Chars::M;
+    let pattern_3 = window.top_left == Chars::S && window.top_right == Chars::S && window.bottom_left == Chars::M && window.bottom_right == Chars::M;
+    let pattern_4 = window.top_left == Chars::M && window.top_right == Chars::S && window.bottom_left == Chars::M && window.bottom_right == Chars::S;
+
+    window.center == Chars::A
+    && (pattern_1 || pattern_2 || pattern_3 || pattern_4)
 }
 
 impl Challenge for Day4 {
@@ -204,7 +223,22 @@ impl Challenge for Day4 {
     }
     
     fn part_2(&self) -> i32 {
-        42
+        let contents: String = read_contents(&self.input_path);
+        let lines: Vec<Vec<char>> = contents.split("\n").map(|s| s.chars().collect()).collect();
+        let array: Array2D<char> = Array2D::from_rows(&lines).unwrap();
+        let n_rows: usize = array.num_rows();
+        let n_cols: usize = array.num_columns();
+
+        let mut count_valid: i32 = 0;
+        for row_index in 0..n_rows-2 {
+            for col_index in 0..n_cols-2 {
+                let window: Window = build_window(&array, row_index, col_index);
+                if is_valid_mas_cross(window) {
+                    count_valid += 1;
+                }
+            }
+        }
+        count_valid
     }
 }
 
