@@ -7,7 +7,7 @@ struct Day6 {
     input_path: String
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 enum Direction {
     North,
     South,
@@ -25,7 +25,7 @@ impl fmt::Display for Direction {
         }
     }
 }
-
+#[derive(PartialEq, Eq, Clone, Copy)]
 struct Guard {
     row: i32,
     col: i32,
@@ -38,7 +38,14 @@ impl fmt::Display for Guard {
     }
 }
 
-fn parse_lines(input_path: &str) -> (HashSet<(i32, i32)>, Guard, i32, i32) {
+struct Game {
+    rocks: HashSet<(i32, i32)>,
+    guard: Guard,
+    n_rows: i32,
+    n_cols: i32
+}
+
+fn parse_lines(input_path: &str) -> Game {
     let contents: String = read_contents(input_path);
     let mut rocks: HashSet<(i32, i32)> = HashSet::new();
     let mut row: i32 = 0;
@@ -57,39 +64,8 @@ fn parse_lines(input_path: &str) -> (HashSet<(i32, i32)>, Guard, i32, i32) {
         n_cols = column;
         row += 1;
     }
-    (rocks, guard.unwrap(), row, n_cols)
+    Game {rocks, guard: guard.unwrap(), n_rows: row, n_cols }
 }
-/*
-fn move_guard(rocks: &HashSet<(i32, i32)>, guard: Guard, next_position: (i32, i32)) -> Guard {
-    if rocks.contains(&next_position) {
-        if guard.direction == Direction::North {
-            Guard { row: guard.row, col: guard.col + 1, direction: Direction::East }
-        }
-        else if guard.direction == Direction::East {
-            Guard { row: guard.row + 1, col: guard.col, direction: Direction::South }
-        }
-        else if guard.direction == Direction::South {
-            Guard { row: guard.row, col: guard.col - 1, direction: Direction::West }
-        }
-        else {
-            Guard { row: guard.row - 1, col: guard.col, direction: Direction::North }
-        }
-    }
-    else {
-        if guard.direction == Direction::North {
-            Guard { row: guard.row - 1, col: guard.col, direction: guard.direction }
-        }
-        else if guard.direction == Direction::East {
-            Guard { row: guard.row, col: guard.col + 1, direction: guard.direction }
-        }
-        else if guard.direction == Direction::South {
-            Guard { row: guard.row + 1, col: guard.col, direction: guard.direction }
-        }
-        else {
-            Guard { row: guard.row, col: guard.col - 1, direction: guard.direction }
-        }
-    }
-}*/
 
 fn get_next_position(rocks: &HashSet<(i32, i32)>, guard: Guard) -> Guard {
     match guard.direction {
@@ -124,27 +100,61 @@ fn get_next_position(rocks: &HashSet<(i32, i32)>, guard: Guard) -> Guard {
     }
 }
 
+fn contains_loop(game: Game) -> bool {
+    let mut visited_positions: HashSet<(i32, i32)> = HashSet::new();
+    let mut guard: Guard = game.guard;
+    let mut current_loop: HashSet<(i32, i32)> = HashSet::new();
+    
+    while guard.row < game.n_rows && guard.row >= 0 && guard.col < game.n_cols && guard.col >= 0 {
+        //println!("Guard: {}", guard);
+        let current_pos: (i32, i32) = (guard.row, guard.col);
+        guard = get_next_position(&game.rocks, guard);
+        let next_pos: (i32, i32) = (guard.row, guard.col);
+        
+        // Need to detect loop correctly!!!!
+        if visited_positions.contains(&current_pos) {
+            if current_loop.contains(&current_pos) {
+                return true;
+            }
+            else {
+                current_loop.insert(current_pos);
+            }
+        }
+        visited_positions.insert(current_pos);
+    }
+    false
+}
+
 impl Challenge for Day6 {
     fn part_1(&self) -> i32 {
-        let (rocks, initial_guard, n_rows, n_cols) = parse_lines(&self.input_path);
+        let game = parse_lines(&self.input_path);
         let mut visited_positions: HashSet<(i32, i32)> = HashSet::new();
-        let mut all_positions: Vec<(i32, i32)> = Vec::new();
+        let mut guard: Guard = game.guard;
 
-        let mut guard: Guard = initial_guard;
-        println!("n_rows: {}, n_cols: {}", n_rows, n_cols);
-
-        while guard.row < n_rows && guard.row >= 0 && guard.col < n_cols && guard.col >= 0 {
-            println!("Guard: {}", guard);
-            let pos = (guard.row, guard.col);
+        while guard.row < game.n_rows && guard.row >= 0 && guard.col < game.n_cols && guard.col >= 0 {
+            //println!("Guard: {}", guard);
+            let pos: (i32, i32) = (guard.row, guard.col);
             visited_positions.insert(pos);
-            all_positions.push(pos);
-            guard = get_next_position(&rocks, guard);
+            guard = get_next_position(&game.rocks, guard);
         }
         visited_positions.len().try_into().unwrap()
     }
 
     fn part_2(&self) -> i32 {
-        42
+        let game = parse_lines(&self.input_path);
+        let mut n_loops = 0;
+        for i in 0..game.n_rows-1 {
+            for j in 0..game.n_cols-1 {
+                if !game.rocks.contains(&(i, j)) && !(i == game.guard.row && j == game.guard.col ) {
+                    let mut modified_rocks = game.rocks.clone();
+                    modified_rocks.insert((i,j));
+                    if contains_loop(Game {rocks: modified_rocks, guard: game.guard, n_rows: game.n_rows, n_cols: game.n_cols}) {
+                        n_loops += 1;
+                    }
+                }
+            }
+        }
+        n_loops
     }
 }
 
