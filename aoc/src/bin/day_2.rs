@@ -50,7 +50,7 @@ fn _is_safe(levels: &Vec<i32>, tolerate_one_failed_report: bool, current_index: 
                 return false;
             }
             else {
-                let new_index = current_index + (1 as usize);
+                let new_index = current_index + 1_usize;
                 return _is_safe(levels, tolerate_one_failed_report, &new_index);
             }
         }
@@ -62,12 +62,12 @@ fn _is_safe(levels: &Vec<i32>, tolerate_one_failed_report: bool, current_index: 
 impl Challenge for Day2 {
     fn part_1(&self) -> i32 {
         let reports = parse_lines(&self.input_path);
-        reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, false)).count().try_into().unwrap()
+        reports.iter().filter(|levels: &&Vec<i32>| is_safe(levels, false)).count().try_into().unwrap()
     }
     
     fn part_2(&self) -> i32 {
         let reports = parse_lines(&self.input_path);
-        reports.iter().filter(|levels: &&Vec<i32>| is_safe(*levels, true))
+        reports.iter().filter(|levels: &&Vec<i32>| is_safe(levels, true))
             .count().try_into().unwrap()
     }
 }

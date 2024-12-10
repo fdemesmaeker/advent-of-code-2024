@@ -9,8 +9,8 @@ struct Day3 {
 
 fn perform_mult(mult: &str) -> i32 {
     let re = Regex::new(r"[0-9]{1,3}").unwrap();
-    let operands: Vec<&str> = re.find_iter(&mult).map(|m| m.as_str()).collect();
-    if operands.len() != (2 as usize) {
+    let operands: Vec<&str> = re.find_iter(mult).map(|m| m.as_str()).collect();
+    if operands.len() != 2_usize {
         panic!("Could not find two operands for detected mult: {mult}");
     } else {
         let left = operands[0].parse::<i32>().unwrap();
@@ -30,7 +30,7 @@ impl Challenge for Day3 {
     
         let re = Regex::new(r"mul\([0-9]{1,3},[0-9]{1,3}\)").unwrap();
         let multiplications: Vec<&str> = re.find_iter(&contents).map(|m| m.as_str()).collect();
-        multiplications.iter().map(|mult:&&str| perform_mult(*mult)).sum()
+        multiplications.iter().map(|mult:&&str| perform_mult(mult)).sum()
     }
     
     
@@ -46,13 +46,11 @@ impl Challenge for Day3 {
                 Acc { should_multiply: true, sum: acc.sum}
             } else if elem.eq("don't()") {
                 Acc { should_multiply: false, sum: acc.sum}
+            } else if acc.should_multiply {
+                let product: i32 = perform_mult(elem);
+                Acc { should_multiply: true, sum: acc.sum + product}
             } else {
-                if acc.should_multiply {
-                    let product: i32 = perform_mult(elem);
-                    Acc { should_multiply: true, sum: acc.sum + product}
-                } else {
-                    Acc { should_multiply: false, sum: acc.sum}
-                }
+                Acc { should_multiply: false, sum: acc.sum}
             }
         }
     

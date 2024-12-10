@@ -105,7 +105,7 @@ fn build_diagonal_from_bottom_to_top_right(array: &Array2D<char>, start_col: &us
             None => { return diagonal; }
             Some(c) => { diagonal.push(get_char(c)); }
         }
-        col = col + 1;
+        col += 1;
     }
     diagonal
 }
@@ -122,7 +122,7 @@ fn build_diagonal_from_bottom_to_top_left(array: &Array2D<char>, start_col: &usi
         if col == 0 {
             return diagonal;
         }
-        col = col - 1;
+        col -= 1;
     }
     diagonal
 }
@@ -146,9 +146,9 @@ fn _get_from_array(array: &Array2D<char>, row_index: usize, col_index: usize) ->
 
 fn build_window(array: &Array2D<char>, row_index: usize, col_index: usize) -> Window {
     Window {
-        top_left: _get_from_array(&array, row_index, col_index), top_right: _get_from_array(&array, row_index, col_index+2),
-        center: _get_from_array(&array, row_index+1, col_index+1),
-        bottom_left: _get_from_array(&array, row_index+2, col_index), bottom_right: _get_from_array(&array, row_index+2, col_index+2)
+        top_left: _get_from_array(array, row_index, col_index), top_right: _get_from_array(array, row_index, col_index+2),
+        center: _get_from_array(array, row_index+1, col_index+1),
+        bottom_left: _get_from_array(array, row_index+2, col_index), bottom_right: _get_from_array(array, row_index+2, col_index+2)
     }
 }
 
@@ -181,19 +181,19 @@ impl Challenge for Day4 {
         }
         // diagonals
         for i in 0..array.num_columns() {
-            let diagonal_to_right_bottom = build_diagonal_from_top_to_right_bottom(&array, &(i as usize));
+            let diagonal_to_right_bottom = build_diagonal_from_top_to_right_bottom(&array, &{ i });
             sequences.push(diagonal_to_right_bottom);
-            let diagonal_to_left_bottom = build_diagonal_from_top_to_left_bottom(&array, &(i as usize));
+            let diagonal_to_left_bottom = build_diagonal_from_top_to_left_bottom(&array, &{ i });
             sequences.push(diagonal_to_left_bottom);
         }
         // Start from 1 to avoid counting the main diagonal twice
         for i in 1..array.num_columns() {
-            let diagonal_to_top_right = build_diagonal_from_bottom_to_top_right(&array, &(i as usize));
+            let diagonal_to_top_right = build_diagonal_from_bottom_to_top_right(&array, &{ i });
             sequences.push(diagonal_to_top_right);
         }
         // End 1 before num columns to avoid counting the other main diagonal twice
         for i in 0..array.num_columns()-1 {
-            let diagonal_to_top_left = build_diagonal_from_bottom_to_top_left(&array, &(i as usize));
+            let diagonal_to_top_left = build_diagonal_from_bottom_to_top_left(&array, &{ i });
             sequences.push(diagonal_to_top_left);
         }
 

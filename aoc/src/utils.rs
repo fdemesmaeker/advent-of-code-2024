@@ -10,7 +10,7 @@ fn get_path(day_number: i8, is_test: bool) -> String {
 
 pub fn get_input_path(day_number: i8) -> String {
     let args: Vec<String> = env::args().collect();
-    let is_test = args.len() > (1 as usize) && args[1].eq("test");
+    let is_test = args.len() > 1_usize && args[1].eq("test");
     get_path(day_number, is_test)
 }
 
@@ -22,7 +22,7 @@ pub fn vec_to_string(vec: &Vec<i32>) -> String {
 pub trait Challenge {
     fn part_1(&self) -> i32;
     fn part_2(&self) -> i32;
-    fn run(&self) -> () {
+    fn run(&self) {
         let solution_1: i32 = self.part_1();
         println!("Solution part 1: {}", solution_1);
     
@@ -36,7 +36,7 @@ pub fn read_contents(input_path: &str) -> String {
     let display = path.display();
 
     // Open the path in read-only mode, returns `io::Result<File>`
-    let mut file = match File::open(&path) {
+    let mut file = match File::open(path) {
         Err(why) => panic!("couldn't open {}: {}", display, why),
         Ok(file) => file,
     };

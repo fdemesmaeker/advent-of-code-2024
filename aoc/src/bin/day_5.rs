@@ -47,7 +47,7 @@ fn parse_lines(input_path: &str) -> (HashMap<i32, Vec<Rule>>, Vec<Vec<i32>>) {
 */
 fn check_rules(remainder: &[i32], rules: &Vec<Rule>) -> bool {
     let befores: HashSet<i32> = rules.iter().map(|rule| rule.before).collect();
-    remainder.iter().find(|page_number| befores.contains(page_number)).is_none()
+    !remainder.iter().any(|page_number| befores.contains(page_number))
 }
 
 fn check_update(update: &Vec<i32>, rules: &HashMap<i32, Vec<Rule>>) -> bool {
@@ -56,7 +56,7 @@ fn check_update(update: &Vec<i32>, rules: &HashMap<i32, Vec<Rule>>) -> bool {
         let page_number: i32 = update[page_number_index];
         let remainder: &[i32] = &update[page_number_index..update_length];
         let page_number_rules = rules.get(&page_number);
-        if page_number_rules.is_some() && check_rules(remainder, page_number_rules.unwrap()) == false {
+        if page_number_rules.is_some() && !check_rules(remainder, page_number_rules.unwrap()) {
             return false;
         }
     }
@@ -72,16 +72,8 @@ impl Challenge for Day5 {
         let (rules, updates) = parse_lines(&self.input_path);
         let middle_elements: Vec<i32> = updates.iter()
             .filter(|update| check_update(update, &rules))
-            .map(|update| get_middle_element(update))
+            .map(get_middle_element)
             .collect();
-        updates.iter()
-            .filter(|update| check_update(update, &rules))
-            .for_each(|s| println!("{}", vec_to_string(s)));
-
-        updates.iter()
-            .filter(|update| check_update(update, &rules))
-            .map(|update| get_middle_element(update))
-            .for_each(|i| println!("{}", i));
         middle_elements.iter().sum()
     }
     

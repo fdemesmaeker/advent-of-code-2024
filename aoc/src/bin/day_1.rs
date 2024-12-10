@@ -40,7 +40,7 @@ impl Challenge for Day1 {
         let (left, right) = parse_lines(&self.input_path);
         let mut right_map: HashMap<i32, i32> = HashMap::new();
     
-        let add_to_map = |i: &i32| -> () {
+        let add_to_map = |i: &i32| {
             match right_map.get(i) {
                 None => right_map.insert(*i, 1),
                 Some(count) => right_map.insert(*i, count+1)
