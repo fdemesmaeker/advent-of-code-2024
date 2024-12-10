@@ -14,6 +14,11 @@ pub fn get_input_path(day_number: i8) -> String {
     get_path(day_number, is_test)
 }
 
+pub fn vec_to_string(vec: &Vec<i32>) -> String {
+    let vec_of_str: Vec<String> = vec.iter().map(|i| i.to_string()).collect();
+    vec_of_str.join(",")
+}
+
 pub trait Challenge {
     fn part_1(&self) -> i32;
     fn part_2(&self) -> i32;
