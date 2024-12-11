@@ -1,6 +1,6 @@
-use std::{collections::{HashMap, HashSet}, ops::Index, vec};
+use std::{collections::{HashMap, HashSet}, vec};
 
-use aoc::utils::{Challenge, get_input_path, read_contents, vec_to_string};
+use aoc::utils::{Challenge, get_input_path, read_contents};
 
 struct Day5 {
     input_path: String
