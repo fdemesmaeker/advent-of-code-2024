@@ -1,8 +1,8 @@
 use std::{collections::{HashMap, HashSet}, vec};
 
-use aoc::utils::{Challenge, get_input_path, read_contents};
+use aoc::utils::{get_input_path, read_contents};
 
-struct Day5 {
+struct Day {
     input_path: String
 }
 
@@ -91,7 +91,7 @@ fn fix_unordered(update: &Vec<i32>, rules: &RuleMap) -> Vec<i32> {
     new_update
 }
 
-impl Challenge for Day5 {
+impl Day {
     fn part_1(&self) -> i32 {
         let (rules, updates) = parse_lines(&self.input_path);
         let middle_elements: Vec<i32> = updates.iter()
@@ -115,7 +115,9 @@ impl Challenge for Day5 {
 }
 
 fn main() {
-    let input_path: String = get_input_path(5);
-    let day = Day5 {input_path};
-    day.run();
+    let day_number = 5;
+    let input_path: String = get_input_path(day_number);
+    let day = Day {input_path};
+    println!("Day {} part 1: {}", day_number, day.part_1());
+    println!("Day {} part 2: {}", day_number, day.part_2());
 }

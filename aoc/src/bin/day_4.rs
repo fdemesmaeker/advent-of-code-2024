@@ -4,9 +4,9 @@ use array2d::Array2D;
 use regex::Regex;
 
 
-use aoc::utils::{Challenge, get_input_path, read_contents};
+use aoc::utils::{get_input_path, read_contents};
 
-struct Day4 {
+struct Day {
     input_path: String
 }
 
@@ -162,7 +162,7 @@ fn is_valid_mas_cross(window: Window) -> bool {
     && (pattern_1 || pattern_2 || pattern_3 || pattern_4)
 }
 
-impl Challenge for Day4 {
+impl Day {
     fn part_1(&self) -> i32 {
         let contents: String = read_contents(&self.input_path);
         let lines: Vec<Vec<char>> = contents.split("\n").map(|s| s.chars().collect()).collect();
@@ -243,7 +243,9 @@ impl Challenge for Day4 {
 }
 
 fn main() {
-    let input_path: String = get_input_path(4);
-    let day = Day4 {input_path};
-    day.run();
+    let day_number = 5;
+    let input_path: String = get_input_path(day_number);
+    let day = Day {input_path};
+    println!("Day {} part 1: {}", day_number, day.part_1());
+    println!("Day {} part 2: {}", day_number, day.part_2());
 }

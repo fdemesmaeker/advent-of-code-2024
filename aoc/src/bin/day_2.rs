@@ -1,7 +1,7 @@
 use std::fs::read_to_string;
-use aoc::utils::{Challenge, get_input_path};
+use aoc::utils::get_input_path;
 
-struct Day2 {
+struct Day {
     input_path: String
 }
 
@@ -59,7 +59,7 @@ fn _is_safe(levels: &Vec<i32>, tolerate_one_failed_report: bool, current_index: 
 }
 
 
-impl Challenge for Day2 {
+impl Day {
     fn part_1(&self) -> i32 {
         let reports = parse_lines(&self.input_path);
         reports.iter().filter(|levels: &&Vec<i32>| is_safe(levels, false)).count().try_into().unwrap()
@@ -73,8 +73,10 @@ impl Challenge for Day2 {
 }
 
 fn main() {
-    let input_path: String = get_input_path(2);
-    let day = Day2 {input_path};
-    day.run();
+    let day_number = 6;
+    let input_path: String = get_input_path(day_number);
+    let day = Day {input_path};
+    println!("Day {} part 1: {}", day_number, day.part_1());
+    println!("Day {} part 2: {}", day_number, day.part_2());
 }
 

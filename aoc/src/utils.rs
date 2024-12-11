@@ -19,18 +19,6 @@ pub fn vec_to_string(vec: &Vec<i32>) -> String {
     vec_of_str.join(",")
 }
 
-pub trait Challenge {
-    fn part_1(&self) -> i32;
-    fn part_2(&self) -> i32;
-    fn run(&self) {
-        let solution_1: i32 = self.part_1();
-        println!("Solution part 1: {}", solution_1);
-    
-        let solution_2: i32 = self.part_2();
-        println!("Solution part 2: {}", solution_2);
-    }
-}
-
 pub fn read_contents(input_path: &str) -> String {
     let path = Path::new(input_path);
     let display = path.display();

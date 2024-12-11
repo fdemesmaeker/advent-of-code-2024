@@ -1,8 +1,8 @@
 use std::fs::read_to_string;
 use std::collections::HashMap;
-use aoc::utils::{Challenge, get_input_path};
+use aoc::utils::get_input_path;
 
-struct Day1 {
+struct Day {
     input_path: String
 }
 
@@ -27,7 +27,7 @@ fn parse_lines(filename: &str) -> (Vec<i32>, Vec<i32>) {
     (left, right)
 }
 
-impl Challenge for Day1 {
+impl Day {
     fn part_1(&self) -> i32 {
         let (left, right) = parse_lines(&self.input_path);
         
@@ -56,7 +56,9 @@ impl Challenge for Day1 {
 }
 
 fn main() {
-    let input_path: String = get_input_path(1);
-    let day = Day1 {input_path};
-    day.run();
+    let day_number = 6;
+    let input_path: String = get_input_path(day_number);
+    let day = Day {input_path};
+    println!("Day {} part 1: {}", day_number, day.part_1());
+    println!("Day {} part 2: {}", day_number, day.part_2());
 }

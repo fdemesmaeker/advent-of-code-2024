@@ -1,9 +1,9 @@
 use std::fmt;
 use std::collections::HashSet;
 
-use aoc::utils::{Challenge, get_input_path, read_contents};
+use aoc::utils::{get_input_path, read_contents};
 
-struct Day6 {
+struct Day {
     input_path: String
 }
 
@@ -124,7 +124,7 @@ fn contains_loop(game: Game) -> bool {
     false
 }
 
-impl Challenge for Day6 {
+impl Day {
     fn part_1(&self) -> i32 {
         let game = parse_lines(&self.input_path);
         let mut visited_positions: HashSet<(i32, i32)> = HashSet::new();
@@ -170,7 +170,9 @@ impl Challenge for Day6 {
 }
 
 fn main() {
-    let input_path: String = get_input_path(6);
-    let day = Day6 {input_path};
-    day.run();
+    let day_number = 6;
+    let input_path: String = get_input_path(day_number);
+    let day = Day {input_path};
+    println!("Day {} part 1: {}", day_number, day.part_1());
+    println!("Day {} part 2: {}", day_number, day.part_2());
 }

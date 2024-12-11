@@ -1,8 +1,8 @@
 use regex::Regex;
 
-use aoc::utils::{Challenge, get_input_path, read_contents};
+use aoc::utils::{get_input_path, read_contents};
 
-struct Day3 {
+struct Day {
     input_path: String
 }
 
@@ -24,7 +24,7 @@ struct Acc {
     sum: i32
 }
 
-impl Challenge for Day3 {
+impl Day {
     fn part_1(&self) -> i32 {
         let contents = read_contents(&self.input_path);
     
@@ -59,7 +59,9 @@ impl Challenge for Day3 {
 }
 
 fn main() {
-    let input_path: String = get_input_path(3);
-    let day = Day3 {input_path};
-    day.run();
+    let day_number = 3;
+    let input_path: String = get_input_path(day_number);
+    let day = Day {input_path};
+    println!("Day {} part 1: {}", day_number, day.part_1());
+    println!("Day {} part 2: {}", day_number, day.part_2());
 }
